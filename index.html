@@ -32,16 +32,11 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw1-0-woooot-whaaaat-writeup/">cal-cs184-student.github.io/hw1-0-woooot-whaaaat-writeup</a>
 
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
-
-		<figure>
-			<img src="assets/lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/hw1-0-woooot-whaaaat">github.com/cal-cs184-student/hw1-0-woooot-whaaaat</a>
 
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
@@ -55,7 +50,9 @@
 		To begin the assignment we made a very simple function that finds the max and min x and y coordinates for the all three vertices given. This allows us to make a bounding box for the triangle as a whole which we can iterate over to run point-in-triangle tests per each pixel's center.
 		<br/><br/>
 		Speaking of point-in-triangle we needed a function to test this in the first place! To do this we calculated the respective barycentric coordinates for each point using for the given vertices using lambda functions.
-		<br/>TODO: IMAGE GOES HERE<br/>
+		<figure>
+			<img src="assets/output1.png" alt="task1" style="width:50%"/>
+		</figure>
 		<hr/>
 		<h3>Extra Credit:</h3>
 		This worked fairly well however we wanted our rasterizer to work a little bit faster. To begin we measured how long a draw triangle call took in nanoseconds with our current method. Here is 5 outputs of the average difference between chrono::steadyclock::now() at the start and end of the function.
@@ -80,43 +77,94 @@
 
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		To antialias made a few small modifications. First, we increased the size of the sample_buffer by the square root of the sample rate. Second, we scaled all the verticies passed into the draw triangle functions by the same amount such that their relative positioning is identical. Third, for each group of pixels (based on the sample rate) we averaged the color of all the pixels in the grouping and set the final pixel's color to it.
+		<figure>
+			<img src="assets/output2.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output3.png" alt="Lion" style="width:50%"/>
+			<figcaption>4x</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output5.png" alt="Lion" style="width:50%"/>
+			<figcaption>16x</figcaption>
+		</figure>
 		<hr/>
 		<h3>Extra Credit:</h3>
 		Jitter Sampling: to implement jitter sampling, we used the C++ random library to create a random value between 0 and 1 for both the x and y axis. We replaced the 0.5, 0.5 coordinate we used to get the center of every pixel with the random jitter sampled coordinate.
+		<figure>
+			<img src="assets/screenshot_9-27_0-52-46.png" alt="Lion" style="width:50%"/>
+			<figcaption>16x, not jittered</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/screenshot_9-27_0-53-48.png" alt="Lion" style="width:50%"/>
+			<figcaption>16x, jittered</figcaption>
+		</figure>
+		Interestingly you can see that the jittered version tends to have a little more definition to the white line, though with the caveat of artifacting in the blue.
 
 		<h2>Task 3: Transforms</h2>
-		We tried making cube man have both his arms up like its "absolute cinema".<br/><br/> TODO : IMAGE HERE <br/><br/>
+		We tried making cube man have both his arms up like its "absolute cinema".
+		<figure>
+			<img src="assets/output6.png" alt="Lion" style="width:50%"/>
+		</figure>
 
 		Extra Credit(New feature in the gui): The key R now rotates the entire view finder by a random degree between 0 and 360. To implement this we edited the redraw command and added an angle attribute to as a global variable. At initialization the angle is 0, but after pressing the button it changes. We then made a transformation matrix that translates to the center of the screen, rotates the angle, and then translates back. We added this matrix to the svg.draw command in between the ndc_to_screen and svg_to_ndc matrices and the drawing of the canvas outline.
 
 		<h2>Task 4: Barycentric coordinates</h2>
 		Barycentric coordinates are effectively a way of measuring how close a pixel is to each vertex of the triangle. If we draw lines to each vertex of the triangle, we can create three areas oposite each vertex. Naturally, if the point is closer to any given vertex the area of the section opposite the vertex grows, and the further it is, the area shrinks. Therefore, we can use barycentric coordinates to say how much each vertex represents a given point allowing us to color any pixel inside the triangle as a ratio of the colors at its verticies.
-		<br/>TODO: IMAGE GOES HERE<br/>
+		<figure>
+			<img src="assets/task4.png" alt="Lion" style="width:50%"/>
+		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		To begin, we're given corresponding UV coordinates for every vertex of the triangle. The UV coordinates represent the vertices of a triangle on a flat texture area. From here, we can use Barycentric coordinates to estimate the UV coordinate that best cooresponds with our position within the triangle we wish to draw. This leads to two potential options, we may either choose the nearest coordinate (by just rounding) on the texture or we can average the nearest ones, this is known as bilinear level sampling.
-		<br/><br/> TODO : IMAGE HERE <br/><br/>
-		<br/><br/> TODO : IMAGE HERE <br/><br/>
-		<br/><br/> TODO : IMAGE HERE <br/><br/>
-		<br/><br/> TODO : IMAGE HERE <br/><br/>
+		<br/><br/>
+		Interestingly you can see that bilinear filtering has a great affect at 1x sampling but falls off greatly at 16x where there is basically no difference.
+		<figure>
+			<img src="assets/output8.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Nearest</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output9.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Bilinear</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output10.png" alt="Lion" style="width:50%"/>
+			<figcaption>16x, Nearest</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output11.png" alt="Lion" style="width:50%"/>
+			<figcaption>16x, Bilinear</figcaption>
+		</figure>
 
-		<h2>Task 6: "Level `" with mipmaps for texture mapping</h2>
-		Next, what if we're rendering a texture on a really small portion of screen space? If we just used linear or bilinear we will just get one or a few pixels that represent what likely would be representative of a large portion of the texture space. Therefore, we use lower resolution versions (different levels) of each image instead. To do this we checked how much of the texture space we're actually translating over (even though we only ever walk one pixel at a time in our screen space, one pixel might map to many on the texture). From here we take the \(log_2\) of the difference along the x and y axis and use the larger result to choose which level of downsampling we use. Further, we may choose to use a single level or a weighted average of the two levels, since the \(log_2\) of the difference rarely just lands on a clean value. <br/><br/>
+		<h2>Task 6: "Level" with mipmaps for texture mapping</h2>
+		Next, what if we're rendering a texture on a really small portion of screen space? If we just used linear or bilinear we will just get one or a few pixels that represent what likely would be representative of a large portion of the texture space. Therefore, we use lower resolution versions (different levels) of each image instead. To do this we checked how much of the texture space we're actually translating over (even though we only ever walk one pixel at a time in our screen space, one pixel might map to many on the texture). From here we take the \(log_2\) of the difference along the x and y axis and use the larger result to choose which level of downsampling we use. Further, we may choose to use a single level or a weighted average of the two levels, since the \(log_2\) of the difference rarely just lands on a clean value.
+		<br/><br/>
+		With regards to performance, for texture mapping, naturally bilinear would take longer than nearest values as we sample more areas of the texture, though this performance loss provides especially for textures that are mapped to small areas (see above) can provide increased clarity. However this effect naturallly will fall off as the sample area approaches the resolution of the actual texture as you can see with the images below or the 16x sampled image above. For level mapping, nearest and linear level mapping I would think are fairly close to each other performance wise since you only sample at most one other texture level, though visually I think linear level mapping provides a much better result, as nearest causes smooth lines looks like they start smearing. Though both look decently smoother than level 0.
+		<figure>
+			<img src="assets/screenshot_9-26_23-28-46.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Nearest, Level 0</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/screenshot_9-26_23-28-50.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Bilinear, Level 0</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/screenshot_9-26_23-28-55.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Bilinear, Level Nearest</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/screenshot_9-26_23-29-0.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Bilinear, Level Nearest</figcaption>
+		</figure>
+		<figure>
+			<img src="assets/output14.png" alt="Lion" style="width:50%"/>
+			<figcaption>1x, Bilinear, Level Linear (extra)</figcaption>
+		</figure>
 		
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		We did not attempt this extra credit.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations,
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
