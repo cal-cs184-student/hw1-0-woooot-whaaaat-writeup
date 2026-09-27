@@ -33,7 +33,7 @@
 		<br>
 
 		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
-		
+
 		<br>
 
 		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
@@ -48,59 +48,69 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		A simple SVG renderer with texture mapping, antialiasing and more!
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
-		
+		To begin the assignment we made a very simple function that finds the max and min x and y coordinates for the all three vertices given. This allows us to make a bounding box for the triangle as a whole which we can iterate over to run point-in-triangle tests per each pixel's center.
+		<br/><br/>
+		Speaking of point-in-triangle we needed a function to test this in the first place! To do this we calculated the respective barycentric coordinates for each point using for the given vertices using lambda functions.
+		<br/>TODO: IMAGE GOES HERE<br/>
+		<hr/>
+		<h3>Extra Credit:</h3>
+		This worked fairly well however we wanted our rasterizer to work a little bit faster. To begin we measured how long a draw triangle call took in nanoseconds with our current method. Here is 5 outputs of the average difference between chrono::steadyclock::now() at the start and end of the function.
+		<br/><br/>
+		Function took 963542 ns<br/>
+		Function took 942833 ns<br/>
+		Function took 979750 ns<br/>
+		Function took 1038042 ns<br/>
+		Function took 959667 ns<br/>
+		Function took 969500 ns<br/>
+		<br/><br/>
+		In short about a millissecond per call. We wanted to optimize this by minimizing the amount of pixels we actually check.<br/><br/>
+		First we ditched the bounding box. We still iterated from min to max x however now using the slope of the triangle edges we found different min and max y values per x value. Then we considered that if we knew the first and last y-pixel that was valid, we could assume that all pixels in between were also valid. This brought our run time to the following.
+		<br/><br/>
+		Function took 7833 ns<br/>
+		Function took 7666 ns<br/>
+		Function took 7625 ns<br/>
+		Function took 8292 ns<br/>
+		Function took 7584 ns<br/>
+		Function took 10125 ns<br/>
+		<br/><br/>
+
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		To antialias made a few small modifications. First, we increased the size of the sample_buffer by the square root of the sample rate. Second, we scaled all the verticies passed into the draw triangle functions by the same amount such that their relative positioning is identical. Third, for each group of pixels (based on the sample rate) we averaged the color of all the pixels in the grouping and set the final pixel's color to it.
+		<hr/>
+		<h3>Extra Credit:</h3>
+		Jitter Sampling: to implement jitter sampling, we used the C++ random library to create a random value between 0 and 1 for both the x and y axis. We replaced the 0.5, 0.5 coordinate we used to get the center of every pixel with the random jitter sampled coordinate.
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We tried making cube man have both his arms up like its "absolute cinema".<br/><br/> TODO : IMAGE HERE <br/><br/>
+
+		Extra Credit(New feature in the gui): The key R now rotates the entire view finder by a random degree between 0 and 360. To implement this we edited the redraw command and added an angle attribute to as a global variable. At initialization the angle is 0, but after pressing the button it changes. We then made a transformation matrix that translates to the center of the screen, rotates the angle, and then translates back. We added this matrix to the svg.draw command in between the ndc_to_screen and svg_to_ndc matrices and the drawing of the canvas outline.
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Barycentric coordinates are effectively a way of measuring how close a pixel is to each vertex of the triangle. If we draw lines to each vertex of the triangle, we can create three areas oposite each vertex. Naturally, if the point is closer to any given vertex the area of the section opposite the vertex grows, and the further it is, the area shrinks. Therefore, we can use barycentric coordinates to say how much each vertex represents a given point allowing us to color any pixel inside the triangle as a ratio of the colors at its verticies.
+		<br/>TODO: IMAGE GOES HERE<br/>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		To begin, we're given corresponding UV coordinates for every vertex of the triangle. The UV coordinates represent the vertices of a triangle on a flat texture area. From here, we can use Barycentric coordinates to estimate the UV coordinate that best cooresponds with our position within the triangle we wish to draw. This leads to two potential options, we may either choose the nearest coordinate (by just rounding) on the texture or we can average the nearest ones, this is known as bilinear level sampling.
+		<br/><br/> TODO : IMAGE HERE <br/><br/>
+		<br/><br/> TODO : IMAGE HERE <br/><br/>
+		<br/><br/> TODO : IMAGE HERE <br/><br/>
+		<br/><br/> TODO : IMAGE HERE <br/><br/>
 
-		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<h2>Task 6: "Level `" with mipmaps for texture mapping</h2>
+		Next, what if we're rendering a texture on a really small portion of screen space? If we just used linear or bilinear we will just get one or a few pixels that represent what likely would be representative of a large portion of the texture space. Therefore, we use lower resolution versions (different levels) of each image instead. To do this we checked how much of the texture space we're actually translating over (even though we only ever walk one pixel at a time in our screen space, one pixel might map to many on the texture). From here we take the \(log_2\) of the difference along the x and y axis and use the larger result to choose which level of downsampling we use. Further, we may choose to use a single level or a weighted average of the two levels, since the \(log_2\) of the difference rarely just lands on a clean value. <br/><br/>
+		
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We did not attempt this extra credit.
 
 		<h2>Additional Notes (please remove)</h2>
 		<ul>
 			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
+			<li>If you'd like to add math equations,
 				<ul>
 					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
 					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
